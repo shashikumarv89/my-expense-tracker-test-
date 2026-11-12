@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#142B42">
+    <meta name="description" content="My personal monthly expense manager">
+    <title>My Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    
+<link rel="manifest" href="./manifest.json">
+
+<meta name="theme-color" content="#173B59">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<meta name="apple-mobile-web-app-title" content="My Expenses">
+
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+
+</head>
+<body>
+
+    <div class="app-container">
+
+        <header class="app-header">
+            <div>
+                <p class="small-heading">PERSONAL FINANCE</p>
+                <h1>My Expense Tracker</h1>
+                <p id="currentMonth"></p>
+            </div>
+            <div class="wallet-icon" aria-label="My Expense Tracker">₹</div>
+        </header>
+
+        <main class="app-main">
+
+            
+<section class="summary-card">
+    <p>Monthly Financial Overview</p>
+
+    <div class="summary-details">
+        <div>
+            <span>Total Income</span>
+            <strong id="totalIncome">₹0</strong>
+        </div>
+
+        <div>
+            <span>Total Expenses</span>
+            <strong id="totalExpenses">₹0</strong>
+        </div>
+
+        <div>
+            <span>Monthly Savings</span>
+            <strong id="monthlySavings">₹0</strong>
+        </div>
+    </div>
+
+    <div class="summary-details budget-details">
+        <div>
+            <span>Monthly Budget</span>
+            <strong id="monthlyBudget">₹0</strong>
+        </div>
+
+        <div>
+            <span id="budgetStatusLabel">Budget Remaining</span>
+            <strong id="remainingBudget">₹0</strong>
+        </div>
+    </div>
+</section>
+
+
+            <section class="section">
+                <div class="section-heading">
+                    <h2>Recent Transactions</h2>
+                    <button id="addExpenseBtn">+ Add Transaction</button>
+                </div>
+
+                <div id="transactionList" class="transaction-list">
+                    <p class="empty-message">
+                        No transactions yet. Add your first expense!
+                    </p>
+                </div>
+            </section>
+
+<!-- MONTHLY REPORTS -->
+<section class="section reports-section">
+    <h2>Reports & Analytics</h2>
+    <div class="report-subnav" role="tablist" aria-label="Report sections">
+        <button type="button" class="active" data-report-tab="charts">Graphs & Charts</button>
+        <button type="button" data-report-tab="monthly">Monthly Analysis</button>
+        <button type="button" data-report-tab="yearly">Yearly Analysis</button>
+        <button type="button" data-report-tab="backup">Data & Backup</button>
+    </div>
+
+    <div class="report-pane" data-report-pane="charts">
+        <div class="chart-controls">
+            <div><label for="chartDataSelect">Data to visualize</label>
+                <select id="chartDataSelect"><option value="income-expense">Income vs Expenses</option><option value="categories">Expenses by Category</option><option value="daily">Daily Spending Trend</option></select>
+            </div>
+            <div><label for="chartTypeSelect">Choose graph type</label>
+                <select id="chartTypeSelect"><option value="bar">Bar Chart</option><option value="line">Line Chart</option><option value="donut">Pie / Donut Chart</option><option value="area">Area Chart</option><option value="column">Column Chart</option></select>
+            </div>
+            <button type="button" id="refreshChartBtn">Update Graph</button>
+        </div>
+        <div class="report-card graph-card">
+            <div class="graph-heading"><div><h3 id="selectedGraphTitle">Income vs Expenses</h3><p>Choose the graph and data you want to explore.</p></div><span class="graph-period" id="graphPeriodLabel"></span></div>
+            <div id="incomeExpenseChart" class="interactive-chart" aria-live="polite"></div>
+        </div>
+        <div class="report-card"><h3>Category Breakdown</h3><div id="categoryChart"></div></div>
+        <div class="report-card"><h3>Category Budget vs Actual Spending</h3><p class="feature-description">Compare your monthly category limits with actual expenses.</p><div id="categoryBudgetReport"></div></div>
+    </div>
+
+    <div class="report-pane" data-report-pane="monthly" hidden>
+        <div class="month-selector"><label for="reportMonth">Select Report Month</label><input type="month" id="reportMonth"></div>
+        <div class="report-card"><h3>Monthly Income & Expense Summary</h3><div id="monthlyAnalysisSummary"></div></div>
+    </div>
+
+    <div class="report-pane" data-report-pane="yearly" hidden>
+        <div class="report-card yearly-report">
+
+    <h3>Yearly Financial Report</h3>
+
+    <label for="reportYear">Select Year</label>
+    <select id="reportYear"></select>
+
+    <div class="yearly-summary">
+        <div>
+            <span>Annual Income</span>
+            <strong id="yearIncome">₹0</strong>
+        </div>
+
+        <div>
+            <span>Annual Expenses</span>
+            <strong id="yearExpenses">₹0</strong>
+        </div>
+
+        <div>
+            <span>Annual Savings</span>
+            <strong id="yearSavings">₹0</strong>
+        </div>
+
+        <div>
+            <span>Highest Spending Month</span>
+            <strong id="highestSpendingMonth">-</strong>
+        </div>
+    </div>
+
+    <h3 class="yearly-breakdown-title">Monthly Breakdown</h3>
+
+    <div id="yearlyBreakdown"></div>
+
+</div>
+    </div>
+
+    <div class="report-pane" data-report-pane="backup" hidden>
+        <div class="export-section"><h3>Export Financial Records</h3><p>Download your transactions as an Excel-compatible CSV file.</p><button id="exportBtn">Download Excel Report</button></div>
+        <div class="export-section backup-section"><h3>Data Backup & Restore</h3><p>Protect your financial records and restore them whenever you change devices.</p><button id="backupBtn">Download Full Backup</button><button id="restoreBtn" class="restore-button">Restore Backup</button><input type="file" id="restoreFile" accept=".json,application/json" hidden></div>
+    </div>
+
+</section>
+
+            <section class="section">
+                <h2>Monthly Budget</h2>
+                <div class="budget-input">
+                    <input
+                        type="number"
+                        id="budgetInput"
+                        placeholder="Enter monthly budget"
+                        min="0"
+                    >
+                    <button id="saveBudgetBtn">Save</button>
+                </div>
+            </section>
+
+        </main>
+
+
+        <footer>
+            <p>My Expense Tracker © 2026</p>
+        </footer>
+
+    </div>
+
+    <script src="app.js"></script>
+    
+<script>
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", async () => {
+            try {
+                const registration =
+                    await navigator.serviceWorker.register("./sw.js");
+
+                console.log(
+                    "Service Worker registered:",
+                    registration.scope
+                );
+
+            } catch (error) {
+                console.error(
+                    "Service Worker registration failed:",
+                    error
+                );
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
